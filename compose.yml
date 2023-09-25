@@ -1,13 +1,17 @@
 services:
-  mongo:
-    build: ./mongo
+  redis:
+    build: ./redis
+    ports:
+      - '6379:6379'
   web:
+    # don't start web app until redis is online
     depends_on:
-      - mongo
+      - redis
     build: ./server
     ports:
-      - "5000:5000"
+      - '5000:5000'
     volumes:
       - ./server:/code
+    # virtual link to redis through docker network
     links:
-      - mongo
+      - redis
